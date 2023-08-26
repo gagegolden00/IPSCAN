@@ -14,7 +14,7 @@ class IpScan
         puts "IP: #{ip}"
         puts "STATUS: #{ping_output}"
         
-        if ping_successful?
+        if ping_successful?(ping_output)
           successful_ping_addresses << ip
         end
         
@@ -71,9 +71,12 @@ Usage: ruby ping_script.rb 192.168.___._
     end
   end
 
-  def self.ping_successful?
-    true # Implement actual logic for success checking here
+  def self.ping_successful?(ping_output)
+    sent_received_strings = ["1 packets transmitted, 1 received,"]
+    success = sent_received_strings.any? { |string| ping_output.include?(string) }
+    success
   end
+  
 
   def self.display_successful_pings(successful_ping_addresses)
     if !successful_ping_addresses.empty?
@@ -90,7 +93,7 @@ input = ARGV[0]
 IpScan.scan(input) if input
 
 
-
+# unsuccessful ping
 #   IP: 192.168.1.174
 # STATUS: PING 192.168.1.174 (192.168.1.174) 56(84) bytes of data.
 # From 192.168.1.175 icmp_seq=1 Destination Host Unreachable
@@ -98,6 +101,7 @@ IpScan.scan(input) if input
 # --- 192.168.1.174 ping statistics ---
 # 1 packets transmitted, 0 received, +1 errors, 100% packet loss, time 0ms
 
+# successful ping 
 # IP: 192.168.1.175
 # STATUS: PING 192.168.1.175 (192.168.1.175) 56(84) bytes of data.
 # 64 bytes from 192.168.1.175: icmp_seq=1 ttl=64 time=0.050 ms
@@ -106,5 +110,3 @@ IpScan.scan(input) if input
 # 1 packets transmitted, 1 received, 0% packet loss, time 0ms
 # rtt min/avg/max/mdev = 0.050/0.050/0.050/0.000 ms
 # IP: 192.168.1.176
-# STATUS: PING 192.168.1.176 (192.168.1.176) 56(84) bytes of data.
-# From 192.168.1.175 icmp_seq=1 Destination Host Unreachable
