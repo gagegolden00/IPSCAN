@@ -12,16 +12,15 @@ class IpScan
     successful_ping_addresses = []
 
     loop do
+      ip = "#{octet_hash[:octet1]}.#{octet_hash[:octet2]}.#{octet_hash[:octet3]}.#{octet_hash[:octet4]}"
       ping_output = `ping -c 1 #{ip}`
-      puts "IP: #{ip}"
-      puts "STATUS: #{ping_output}"
-
+      puts ping_output
       successful_ping_addresses << ip if ping_successful?(ping_output)
 
       octet_hash[:octet4] += 1
-      ip = "#{octet_hash[:octet1]}.#{octet_hash[:octet2]}.#{octet_hash[:octet3]}.#{octet_hash[:octet4]}"
-      break if octet_hash[:octet4] == range
+      break if octet_hash[:octet4] > range
     end
+
 
     display_successful_pings(successful_ping_addresses)
   end
@@ -64,7 +63,6 @@ class IpScan
         octet3: octets[2],
         octet4: octets[3]
       }
-      puts "OCTET_HASH: #{octet_hash}"
       octet_hash
     else
       puts 'failed to build octet_hash'
@@ -72,14 +70,16 @@ class IpScan
   end
 
   def self.ping_successful?(ping_output)
-    sent_received_strings = ['1 packets transmitted, 1 received,']
-    sent_received_strings.any? { |string| ping_output.include?(string) }
+    ping_output.include?('1 packets transmitted, 1 packets received,')
   end
 
   def self.display_successful_pings(successful_ping_addresses)
     if !successful_ping_addresses.empty?
+      puts "
+        successful pings
+        "
       successful_ping_addresses.each do |msg|
-        puts msg
+        puts "          #{msg}"
       end
     else
       puts 'no successful pings'
@@ -91,5 +91,4 @@ end
 input = ARGV
 if input
   IpScan.scan(input)
-  binding.pry
 end
