@@ -16,15 +16,22 @@ def extract_ip_addresses(output)
   end
 
   def get_my_ips
-    public_ip = `curl ifconfig.me`.strip
-    puts "Public IP Address: #{public_ip}"
+    public_ip = `curl -s ifconfig.me`.strip
+    puts "--- Public IP Address---
+      #{public_ip}"
   end
 
+  def output
   ifconfig_output = `ifconfig`
   ip_addresses = extract_ip_addresses(ifconfig_output)
 
+  puts "--- Local IP Address --- "
   ip_addresses.each do |(label, ip)|
-    puts "Label: #{label}, IP: #{ip}" if ip
+    puts "-----------------------------------------"
+    puts "adapter: #{label}, IPv4: #{ip}" if ip
+  end
+  puts "-----------------------------------------"
+  get_my_ips
   end
 
-  get_my_ips
+output
