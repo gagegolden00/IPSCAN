@@ -13,7 +13,7 @@ def extract_ip_addresses(output)
     end
 
     ip_addresses
-  end
+end
 
   def get_my_ips
     public_ip = `curl -s ifconfig.me`.strip
